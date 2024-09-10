@@ -3,10 +3,19 @@ import uuid
 from datetime import datetime
 
 class BaseModel:
-    def __init__(self):
-        self.id = str(uuid.uuid4())  # Generate a unique ID
-        self.created_at = datetime.now()  # Set created_at to current datetime
-        self.updated_at = self.created_at  # Set updated_at to current datetime
+    def __init__(self, *args, **kwargs):
+        if kwargs:  # Check if kwargs is not empty
+            for key, value in kwargs.items():
+                if key != "__class__":  # Skip the __class__ key
+                    if key in ["created_at", "updated_at"]:
+                        # Convert the string back to a datetime object
+                        self.__dict__[key] = datetime.fromisoformat(value)
+                    else:
+                        self.__dict__[key] = value
+        else:  # If kwargs is empty, create a new instance
+            self.id = str(uuid.uuid4())  # Generate a unique ID
+            self.created_at = datetime.now()  # Set created_at to current datetime
+            self.updated_at = self.created_at  # Set updated_at to current datetime
 
     def save(self):
         """Updates the updated_at attribute with the current datetime."""
