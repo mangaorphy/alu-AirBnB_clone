@@ -1,33 +1,63 @@
 #!/usr/bin/python3
 import unittest
+import time
 from models.base_model import BaseModel
 
+
 class TestBaseModel(unittest.TestCase):
-    """Test cases for the BaseModel class."""
+    """Test cases for BaseModel class."""
 
-    def test_create(self):
-        """Test creation of a new BaseModel instance."""
-        my_model = BaseModel()
-        self.assertIsInstance(my_model, BaseModel)
-        self.assertIsNotNone(my_model.id)
-        self.assertIsNotNone(my_model.created_at)
-        self.assertIsNotNone(my_model.updated_at)
+    def setUp(self):
+        self.testModel = BaseModel()
 
-    def test_str(self):
-        """Test the __str__ method."""
-        my_model = BaseModel()
-        expected_str = f"[BaseModel] ({my_model.id}) {my_model.__dict__}"
-        self.assertEqual(str(my_model), expected_str)
+    # tear down
+    def tearDown(self):
+        del self.testModel
 
-    def test_to_dict(self):
-        """Test the to_dict method."""
-        my_model = BaseModel()
-        my_model.name = "My First Model"
-        my_model.my_number = 89
-        model_dict = my_model.to_dict()
-        self.assertEqual(model_dict['name'], "My First Model")
-        self.assertEqual(model_dict['my_number'], 89)
-        self.assertEqual(model_dict['__class__'], 'BaseModel')
+    def test_save(self):
+        baseModel = BaseModel()
+        updated_at_before_save = baseModel.updated_at
+        time.sleep(0.5)
+        baseModel.save()
+        updated_at_after_save = baseModel.updated_at
+        self.assertNotEqual(baseModel.updated_at, baseModel.created_at)
+        self.assertNotEqual(updated_at_before_save, updated_at_after_save)
 
-if __name__ == '__main__':
+    # test BaseModel before and after clling save method
+    def test_save_before_save(self):
+        self.assertEqual(self.testModel.updated_at,
+                         self.testModel.created_at)
+    # test BaseModel before and after clling save method
+
+    def test_save_after_save(self):
+        self.testModel.save()
+        self.assertNotEqual(self.testModel.updated_at,
+                            self.testModel.created_at)
+
+    # test BaseModel to_dict method return type
+    def test_to_dict_return(self):
+        testModel_dict = self.testModel.to_dict()
+        self.assertIsInstance(testModel_dict, dict)
+
+    # test BaseModel to_dict method for it's content.
+    def test_to_dict_value(self):
+        testModel_dict = self.testModel.to_dict()
+        self.assertIn('__class__', testModel_dict)
+
+    # test BaseModel to_dict method if it's content has the correct types
+    def test_to_dict_content_type(self):
+        testModel_dict = self.testModel.to_dict()
+        self.assertIsInstance(testModel_dict.get('created_at'), str)
+        self.assertIsInstance(testModel_dict.get('created_at'), str)
+
+    # test string value of BaseModel
+    def test__str__(self):
+        class_name = self.testModel.__class__.__name__
+        id = self.testModel.id
+        dict_v = self.testModel.__dict__
+        self.assertEqual(str(self.testModel),
+                         f"[{class_name}] ({id}) {dict_v}")
+
+
+if __name__ == "__main__":
     unittest.main()
