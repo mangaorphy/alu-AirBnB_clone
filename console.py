@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+"""
+This file defines the console class which will
+serve as the entry point of the entire project
+"""
+
 import cmd
 
 class HBNBCommand(cmd.Cmd):
