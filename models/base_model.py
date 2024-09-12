@@ -15,7 +15,7 @@ class BaseModel:
         else:  # If kwargs is empty, create a new instance
             self.id = str(uuid.uuid4())  # Generate a unique ID
             self.created_at = datetime.now()  # Set created_at to current datetime
-            self.updated_at = self.created_at  # Set updated_at to current datetime
+            self.updated_at = self.crated_at  # Set updated_at to current datetime
             storage.new(self)  # Add this instance to storage
 
 class BaseModel:

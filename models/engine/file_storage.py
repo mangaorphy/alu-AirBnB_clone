@@ -21,12 +21,14 @@ class FileStorage:
             json.dump({k: v.to_dict() for k, v in FileStorage.__objects.items()}, f)
 
     def reload(self):
-        """Deserializes the JSON file to __objects."""
-        if os.path.exists(FileStorage.__file_path):
-            with open(FileStorage.__file_path, 'r') as f:
-                objects_dict = json.load(f)
-                for key, value in objects_dict.items():
-                    cls_name = value['__class__']
-                    del value['__class__']
-                    self.new(eval(cls_name)(**value))  # Recreate instance
-                    
+        """Deserializes the JSON file to __objects (only if the JSON file"""
+        """(path: __file_path) exists ; otherwise, do nothing."""
+        if os.path.exists(self.__file_path):
+            with open(self.__file_path, 'r') as json_file:
+                json_obj = json.load(json_file)
+                for key in json_obj.keys():
+
+                    # By providing the dict value stored in json_obj[key] as
+                    # kwargs, genrate an object with the same attributes
+                    self.__objects[key] = eval(
+                        json_obj[key]['__class__'])(**json_obj[key])
