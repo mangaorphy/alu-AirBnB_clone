@@ -30,6 +30,7 @@ class HBNBCommand(Cmd):
     prompt = "(hbnb) "
 
     """Commands"""
+
     def do_EOF(self, args):
         """Exit the programme in non-interactive mode"""
         return True
